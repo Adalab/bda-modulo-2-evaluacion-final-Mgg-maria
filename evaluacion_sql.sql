@@ -238,13 +238,18 @@ FROM film;
 
 -- 14. Muestra el título de todas las películas que contengan la palabra "dog" o "cat" en su descripción.
 
-SELECT title, `description` -- Añadimos description en los resultados para que la comprobación sea más clara. 
+SELECT title
 FROM film
-WHERE `description` LIKE "%dog%" OR `description` LIKE "%cat%";  -- Añadimos la condición
+WHERE `description` LIKE "%dog%" OR `description` LIKE "%cat%";  
 
 -- TABLAS UTILIZADAS
 SELECT *
 FROM film;
+
+-- COMPROBACIÓN 
+SELECT title, `description` 
+FROM film
+WHERE `description` LIKE "%dog%" OR `description` LIKE "%cat%";  
 
 
 -- 15. Hay algún actor o actriz que no aparezca en ninguna película en la tabla film_actor.
@@ -258,7 +263,7 @@ ON a.actor_id = fa.actor_id  -- Comparamos por la columna común entre ambas, en
 WHERE fa.actor_id IS NULL;   -- Añadimos la condición. Utilizamos IS en lugar del simbolo = porque NULL no representa un valor, sino la falta del mismo
 
 
--- FALTA SELECCIONAR QUÉ COLUMNAS QUEREMOS QUE APAREZCAN EN EL RESULTADO
+-- FALTA SELECCIONAR LOS DATOS QUE QUEREMOS EXTRAER (SELECT)
 SELECT *
 FROM actor as a
 LEFT JOIN film_actor as fa
@@ -272,3 +277,87 @@ FROM film_actor;
 
 SELECT *
 FROM actor;
+
+
+-- 16. Encuentra el título de todas las películas que fueron lanzadas entre el año 2005 y 2010.
+
+SELECT title
+FROM film
+WHERE release_year BETWEEN 2005 AND 2010; 
+
+-- TABLA UTILIZADA
+SELECT *
+FROM film;
+
+-- COMPROBACIÓN
+SELECT title, release_year  
+FROM film
+WHERE release_year BETWEEN 2005 AND 2010;
+
+
+-- 17. Encuentra el título de todas las películas que son de la misma categoría que "Family".
+
+SELECT f.title
+FROM film as f
+INNER JOIN film_category as fc  
+ON f.film_id = fc.film_id
+INNER JOIN category as c
+ON fc.category_id = c.category_id
+WHERE c.name = "Family";
+
+
+-- TABLAS UTILIZADAS
+SELECT *
+FROM film;
+
+SELECT *
+FROM category;
+
+SELECT *
+FROM film_category;
+
+-- COMPROBACIÓN
+SELECT f.title, c.name  -- Sólo añadimos comillas inversas en caso de no existir un alias o no especificar el campo (name es una palabra reservada). En este caso no es necesario porque indicamos que viene de la tabla category.
+FROM film as f
+INNER JOIN film_category as fc
+ON f.film_id = fc.film_id
+INNER JOIN category as c
+ON fc.category_id = c.category_id
+WHERE c.name = "Family";
+
+
+-- 18 . Muestra el nombre y apellido de los actores que aparecen en más de 10 películas.
+
+SELECT a.first_name, a.last_name, COUNT(fa.film_id) as total_peliculas
+FROM actor as a
+INNER JOIN film_actor as fa               -- Unimos las tablas actor con actor por pelicula (film_actor). No podemos vincular directamente la tabla actor y film porque no comparten columna equiparable.
+ON a.actor_id = fa.actor_id
+GROUP BY a.first_name, a.last_name       -- Utilizamos GROUP BY siempre que realizamos una operación (en este caso, COUNT)
+HAVING total_peliculas > 10;             -- Utilizamos HAVING en lugar de WHERE porque no podemos utilizar un alias(total_peliculas en este caso) en la cláusula where
+
+
+-- TABLAS UTILIZADAS
+SELECT *
+FROM actor;
+
+SELECT *
+FROM film;
+
+SELECT *
+FROM film_actor;
+     
+
+-- 19. Encuentra el título de todas las películas que son "R" y tienen una duración mayor a 2 horas en la tabla film.
+
+SELECT title
+FROM film
+WHERE rating = "R" AND length > 120;    
+
+-- TABLA UTILIZADA
+SELECT *
+FROM film;
+
+-- COMPROBACIÓN
+SELECT title, length
+FROM film
+WHERE rating = "R" AND length > 120;  
