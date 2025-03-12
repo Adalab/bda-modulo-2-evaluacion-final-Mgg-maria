@@ -162,7 +162,6 @@ SELECT
 
 
 -- FALTA QUÉ DATOS QUEREMOS SACAR(SELECT) Y SU AGRUPACIÓN (GROUP BY)
-
 SELECT *
 	FROM rental AS r
 	INNER JOIN inventory AS i
@@ -189,3 +188,87 @@ FROM film;
 
 SELECT *
 FROM film_category;
+
+
+-- 12 Encuentra el promedio de duración de las películas para cada clasificación de la tabla film y muestra la clasificación junto con el promedio de duración.
+
+SELECT 
+rating AS clasificacion,
+AVG(length) AS promedio_duracion
+FROM film
+GROUP BY clasificacion; 
+
+-- Al realizar cálculos necesitamos utilizar group by para el funcionamiento del código. No agrupamos por promedio_duracion porque hay que agrupar por columnas reales, no por resultados derivados de cálculos.
+
+-- TABLA UTILIZADA
+SELECT *
+FROM film;
+
+
+ -- 13. Encuentra el nombre y apellido de los actores que aparecen en la película con title "Indian Love".
+ 
+ SELECT a.first_name,a.last_name
+ FROM actor as a
+ INNER JOIN film_actor as fa                -- Unimos las tablas de actores y actores en peliculas (film_actor). Necesitamos la  vinculación con esta tabla porque no hay columnas equiparables que nos permitan hacer la union entre la tabla actor y film. 
+ ON a.actor_id = fa.actor_id
+ INNER JOIN film as f                       -- Unimos las tablas de actores en peliculas (film_actor) y películas
+ ON fa.film_id = f.film_id
+ WHERE title = "Indian Love";               -- Añadimos la condición
+
+-- TABLAS UTILIZADAS
+SELECT *
+FROM actor;
+
+SELECT *
+FROM film_actor;
+
+SELECT *
+FROM film;
+
+
+-- COMPROBACIÓN 
+ SELECT a.first_name,a.last_name, f.title   
+ FROM actor as a
+ INNER JOIN film_actor as fa               
+ ON a.actor_id = fa.actor_id
+ INNER JOIN film as f                  
+ ON fa.film_id = f.film_id
+ WHERE title = "Indian Love";  
+
+
+-- 14. Muestra el título de todas las películas que contengan la palabra "dog" o "cat" en su descripción.
+
+SELECT title, `description` -- Añadimos description en los resultados para que la comprobación sea más clara. 
+FROM film
+WHERE `description` LIKE "%dog%" OR `description` LIKE "%cat%";  -- Añadimos la condición
+
+-- TABLAS UTILIZADAS
+SELECT *
+FROM film;
+
+
+-- 15. Hay algún actor o actriz que no aparezca en ninguna película en la tabla film_actor.
+
+-- SOLUCIÓN FINAL
+
+SELECT a.first_name, a.last_name, fa.film_id
+FROM actor as a
+LEFT JOIN film_actor as fa   -- Unimos la tabla actores en peliculas (film_actor) a la tabla actor.
+ON a.actor_id = fa.actor_id  -- Comparamos por la columna común entre ambas, en este caso, actor_id
+WHERE fa.actor_id IS NULL;   -- Añadimos la condición. Utilizamos IS en lugar del simbolo = porque NULL no representa un valor, sino la falta del mismo
+
+
+-- FALTA SELECCIONAR QUÉ COLUMNAS QUEREMOS QUE APAREZCAN EN EL RESULTADO
+SELECT *
+FROM actor as a
+LEFT JOIN film_actor as fa
+ON a.actor_id = fa.actor_id
+WHERE fa.actor_id IS NULL; 
+
+
+-- TABLAS UTILIZADAS
+SELECT *
+FROM film_actor;
+
+SELECT *
+FROM actor;
